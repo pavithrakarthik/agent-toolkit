@@ -22,6 +22,8 @@ type Options = {
 
 const ACCEPTED_ARGS = ['access-token', 'tools', 'paypal-environment'];
 const ACCEPTED_TOOLS = [
+  'get_activated_vendor_apps',
+  'get_patient_data',
   'invoices.create',
   'invoices.list',
   'invoices.get',

@@ -1,11 +1,35 @@
 import {config} from '@dotenvx/dotenvx';
-import {openai} from '@ai-sdk/openai';
+import {createOpenAI} from '@ai-sdk/openai';
 import {generateText} from 'ai';
-import {PayPalWorkflows, PayPalAgentToolkit, ALL_TOOLS_ENABLED} from '@paypal/agent-toolkit/ai-sdk';
+import {PayPalWorkflows, PayPalAgentToolkit, ALL_TOOLS_ENABLED} from '@fusionforce/agent-toolkit/ai-sdk';
 
 // Get the env file path from an environment variable, with a default fallback
 const envFilePath = process.env.ENV_FILE_PATH || '.env';
 config({path: envFilePath});
+
+/*
+ * Configure Azure OpenAI with custom fetch for proper URL handling
+ */
+const azureOpenai = createOpenAI({
+  baseURL: 'https://oai-use2-dcsvc-np-devp-ssv.openai.azure.com/openai/deployments/gpt-4o-mini',
+  apiKey: process.env.OPENAI_API_KEY,
+  compatibility: 'compatible',
+  fetch: async (url, options) => {
+    // Ensure the URL has the correct format for Azure OpenAI
+    const azureUrl = url.toString().replace('/chat/completions', '/chat/completions?api-version=2024-02-15-preview');
+    
+    // Use api-key header for Azure OpenAI
+    const headers = {
+      ...options?.headers,
+      'api-key': process.env.OPENAI_API_KEY || '',
+    };
+    
+    return fetch(azureUrl, {
+      ...options,
+      headers,
+    });
+  },
+});
 
 /*
  * This holds all the configuration required for starting PayPal Agent Toolkit
@@ -30,27 +54,17 @@ const paypalWorkflows = new PayPalWorkflows(ppConfig)
 /*
  * This is the merchant's typical use case. This stays the same for most requests.
  */
-const systemPrompt = `I am a plumber running a small business. I charge $120 per hour plus 50% tax. I use standard parts which typically include a new faucet costing between $50-80 and pipes for about $3 per foot. There is 12% tax for parts. My return URL is: http://localhost:3000/thank-you.`;
+const systemPrompt = `I am a developer I need to know the activated vendor apps for my orgId 12500006.`;
 
 
 // User can bring their own llm
-const llm = openai('gpt-4o');
+const llm = azureOpenai('gpt-4o-mini');
 
 (async () => {
 
-    // The userPrompt is a specific prompt for a single transaction for the business.
-    const userPrompt = `Customer needed 3 hours of work and had a standard list of parts for replacing a kitchen faucet. Create an order.`
+    const userPrompt = `Get me the activated vendor apps for my orgId 12500006.`;
 
     // Invoke preconfigured workflows that will orchestrate across multiple calls.
-    const orderSummary = await paypalWorkflows.generateOrder(llm, userPrompt, systemPrompt);
-    console.log(orderSummary)
-
-    // (or) Invoke through toolkit for specific use-cases
-    const {text: orderDetails} = await generateText({
-        model: openai('gpt-4o'),
-        tools: paypalToolkit.getTools(),
-        maxSteps: 10,
-        prompt: "Retrieve the details of the order with ID: 4A572180UY881681N",
-    });
-    console.log(orderDetails)
+    const summary = await paypalWorkflows.getActivatedVendorApps(llm, userPrompt, systemPrompt);
+    console.log(summary);
 })();

@@ -81,11 +81,11 @@ class PayPalClient {
 
     async getAccessToken(): Promise<string> {
         const auth = Buffer.from(`${this._clientId}:${this._clientSecret}`).toString('base64');
-        const url = this._baseUrl+'/v1/oauth2/token';
+        const url = `https://ssoqa.pointclickcare.com/as/token.oauth2`;
         try {
             const response = await axios.post(
                 url,
-                'grant_type=client_credentials',
+                'grant_type=client_credentials&scope=INTERNAL',
                 {
                     headers: {
                         'Authorization': `Basic ${auth}`,
@@ -118,14 +118,6 @@ class PayPalClient {
         this._accessToken = this._accessToken || (await this.getAccessToken());
         headers['Authorization'] = `Bearer ${this._accessToken}`;
 
-        // Add additional headers if needed
-        if (this._context.request_id) {
-            headers['PayPal-Request-Id'] = this._context.request_id;
-        }
-
-        if (this._context.tenant_context) {
-            headers['PayPal-Tenant-Context'] = JSON.stringify(this._context.tenant_context);
-        }
 
         headers['User-Agent'] = this.generateUserAgent();
 
