@@ -1,19 +1,19 @@
 
-## PayPal Model Context Protocol
+## PCC Model Context Protocol
 
-The PayPal [Model Context Protocol](https://modelcontextprotocol.com/) server allows you to integrate with PayPal APIs through function calling. This protocol supports various tools to interact with different PayPal services.
+The PCC [Model Context Protocol](https://modelcontextprotocol.com/) server allows you to integrate with PCC APIs through function calling. This protocol supports various tools to interact with different PCC services.
 
-To run the PayPal MCP server using npx, use the following command:
+To run the PCC MCP server using npx, use the following command:
 
 ```bash
-npx -y @paypal/mcp --tools=all PAYPAL_ACCESS_TOKEN="YOUR_ACCESS_TOKEN" PAYPAL_ENVIRONMENT="SANDBOX"
+npx -y @fusionforce/agent-toolkit --tools=all PCC_ACCESS_TOKEN="YOUR_ACCESS_TOKEN" PCC_ENVIRONMENT="SANDBOX"
 ```
 
-Replace `YOUR_ACCESS_TOKEN` with your PayPal access token. Refer this on how to [generate a PayPal access token](#generating-an-access-token). Alternatively, you could set the PAYPAL_ACCESS_TOKEN in your environment variables.
+Replace `YOUR_ACCESS_TOKEN` with your PCC access token. Refer this on how to [generate a PCC access token](#generating-an-access-token). Alternatively, you could set the PCC_ACCESS_TOKEN in your environment variables.
 
 ### Usage with MCP host (Claude Desktop/Cline/Cursor/GitHub Copilot)
 
-This guide explains how to integrate the PayPal connector with Claude Desktop.
+This guide explains how to integrate the PCC connector with Claude Desktop.
 
 ## Prerequisites
 - Claude Desktop application installed
@@ -23,18 +23,18 @@ This guide explains how to integrate the PayPal connector with Claude Desktop.
 
 ### 1. Install Node.js
 
-Node.js is required for the PayPal connector to function:
+Node.js is required for the PCC connector to function:
 
 1. Visit the [Node.js official website](https://nodejs.org/), download and install it.
 2. Requirements: Node 18+
 
-### 2. Configure PayPal Connector with MCP host (Claude desktop / Cursor / Cline)
+### 2. Configure PCC Connector with MCP host (Claude desktop / Cursor / Cline)
 We will show the integration with Claude desktop. You can use your favorite MCP host.
 1. Open Claude Desktop
 2. Navigate to Settings
 3. Find the Developer or Advanced settings section
 4. Locate the external tools or connectors configuration area
-5. Add the following PayPal connector configuration to this ~/Claude/claude_desktop_config.json:
+5. Add the following PCC connector configuration to this ~/Claude/claude_desktop_config.json:
 
 ```json
 {

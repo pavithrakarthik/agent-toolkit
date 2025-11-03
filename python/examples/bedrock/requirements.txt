@@ -1,3 +1,0 @@
-paypal-agent-toolkit
-# Amazon Bedrock
-boto3==1.39.11

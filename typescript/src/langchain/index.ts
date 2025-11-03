@@ -1,5 +1,5 @@
-import PayPalAgentToolkit from "./toolkit";
-import PayPalAPI from '../shared/api';
+import PCCAgentToolkit from "./toolkit";
+import PCCAPI from '../shared/api';
 import { Tool, ALL_TOOLS_ENABLED } from '../shared/tools';
 
-export { PayPalAgentToolkit, PayPalAPI, Tool, ALL_TOOLS_ENABLED }
+export { PCCAgentToolkit, PCCAPI, Tool, ALL_TOOLS_ENABLED }

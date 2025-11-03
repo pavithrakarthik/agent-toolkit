@@ -2,7 +2,7 @@ import axios from 'axios';
 import type { Context } from './configuration';
 import { TypeOf } from "zod";
 import debug from "debug";
-import PayPalClient from './client';
+import PCCClient from './client';
 import { toLlmError, LlmError } from "./llmError";
 
 const logger = debug('agent-toolkit:functions');
@@ -11,27 +11,33 @@ const logger = debug('agent-toolkit:functions');
 export async function getPatientData(
   client: PCCClient,
   context: Context,
+  params: TypeOf<ReturnType<typeof import('./parameters').getPatientDataParameters>>
 ) {
   logger('[getPatientData] Starting to get patient data');
 
   const headers = await client.getHeaders();
   logger('[getPatientData] Headers obtained');
-
-  const url = `https://iureqa.pointclickcare.com/chapeauapi/internal/preview1/activated-vendor-apps?orgId=12500006&facId=1&category=LABORATORY`;
+  const url = `https://iureqa.pointclickcare.com/api/internal/preview1/orgs/${params.org_id}/patients?facId=${params.fac_id}&patientStatus=${params.patient_status}`;
 
   // Make API call
   try {
     logger('[getPatientData] Sending request to PCC API');
     const response = await axios.get(url, { headers });
+    //get only patient ids and patient status for the response
+    const patientData = response.data.map((patient: any) => ({
+      id: patient.id,
+      status: patient.status,
+    }));
     logger(`[getPatientData] Patient data retrieved successfully. Status: ${response.status}`);
-    return response.data;
+    return patientData;
   } catch (error: any) {
     logger('[getPatientData] Error getting patient data:', error.message);
     handleAxiosError(error);
   }
 }
+
 export async function getActivatedVendorApps(
-  client: PayPalClient,
+  client: PCCClient,
   context: Context,
   params: TypeOf<ReturnType<typeof import('./parameters').getActivatedVendorAppsParameters>>
 ) {
@@ -39,8 +45,7 @@ export async function getActivatedVendorApps(
 
   const headers = await client.getHeaders();
   console.log('[getActivatedVendorApps] Headers obtained:', JSON.stringify(headers));
-
-  const url = `https://iureqa.pointclickcare.com/chapeauapi/internal/preview1/activated-vendor-apps?orgId=${params.org_id}&facId=1&category=LABORATORY`;
+  const url = `https://iureqa.pointclickcare.com/api/internal/preview1/orgs/${params.org_id}/patients`;
 
   // Make API call
   try {
@@ -53,6 +58,31 @@ export async function getActivatedVendorApps(
     handleAxiosError(error);
   }
 }
+
+export async function getFacs(
+  client: PCCClient,
+  context: Context,
+  params: TypeOf<ReturnType<typeof import('./parameters').getFacsParameters>>
+) {
+  console.log('[getFacs] Starting to get FACS with context:', JSON.stringify(context));
+
+  const headers = await client.getHeaders();
+  console.log('[getFacs] Headers obtained:', JSON.stringify(headers));
+
+  const url = `https://iureqa.pointclickcare.com/api/internal/preview1/orgs/${params.org_id}/facs/${params.fac_id}`;
+
+  // Make API call
+  try {
+    console.log('[getFacs] Sending request to PCC API:', url);
+    const response = await axios.get(url, { headers });
+    console.log(`[getFacs] FACS retrieved successfully. Status: ${response.status}`);
+    return response.data;
+  } catch (error: any) {
+    console.log('[getFacs] Error getting FACS:', error.message);
+    handleAxiosError(error);
+  }
+}
+
 
 // Helper function to handle Axios errors -> throws LlmError
 export function handleAxiosError(error: any): never {

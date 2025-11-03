@@ -2,24 +2,24 @@ import { z } from 'zod';
 import { StructuredTool } from '@langchain/core/tools';
 import {CallbackManagerForToolRun} from '@langchain/core/callbacks/manager';
 import { RunnableConfig } from '@langchain/core/runnables';
-import PayPalAPI from '../shared/api';
+import PCCAPI from '../shared/api';
 
-class PayPalTool extends StructuredTool {
-  PayPalAPI: PayPalAPI;
+class PCCTool extends StructuredTool {
+  PCCAPI: PCCAPI;
   method: string;
   name: string;
   description: string;
   schema: z.ZodObject<any, any, any, any>;
 
   constructor(
-    PayPalAPI: PayPalAPI,
+    PCCAPI: PCCAPI,
     method: string, 
     name: string,
     description: string,
     schema: z.ZodObject<any, any, any, any, {[x: string]: any}>
   ) {
     super();
-    this.PayPalAPI = PayPalAPI;
+    this.PCCAPI = PCCAPI;
     this.method = method;
     this.name = method;
     this.description = description;
@@ -31,8 +31,8 @@ class PayPalTool extends StructuredTool {
     _runManager?: CallbackManagerForToolRun,
     _parentConfig?: RunnableConfig,
   ): Promise<any> {
-    return this.PayPalAPI.run(this.method, arg);
+    return this.PCCAPI.run(this.method, arg);
   }
 }
 
-export default PayPalTool;
+export default PCCTool;

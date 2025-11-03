@@ -1,5 +1,5 @@
 import { config } from '@dotenvx/dotenvx';
-import { PayPalAgentToolkit, ALL_TOOLS_ENABLED } from '@paypal/agent-toolkit/bedrock';
+import { PCCAgentToolkit, ALL_TOOLS_ENABLED } from '@fusionforce/agent-toolkit/bedrock';
 import { BedrockRuntimeClient, ConverseCommand, Message } from '@aws-sdk/client-bedrock-runtime';
 
 const envFilePath = process.env.ENV_FILE_PATH || '.env';
@@ -16,8 +16,8 @@ const client = new BedrockRuntimeClient({
 const modelId = "anthropic.claude-3-5-haiku-20241022-v1:0";
 
 const ppConfig = {
-    clientId: process.env.PAYPAL_CLIENT_ID || '',
-    clientSecret: process.env.PAYPAL_CLIENT_SECRET || '',
+    clientId: process.env.PCC_CLIENT_ID || '',
+    clientSecret: process.env.PCC_CLIENT_SECRET || '',
     configuration: {
         actions: ALL_TOOLS_ENABLED, 
         context: {
@@ -26,10 +26,10 @@ const ppConfig = {
     }
 }
 
-const paypalToolkit = new PayPalAgentToolkit(ppConfig);
-let tools = paypalToolkit.getTools();
+const pccToolkit = new PCCAgentToolkit(ppConfig);
+let tools = pccToolkit.getTools();
 
-const userMessage = "Create one PayPal order for $50 for Premium News service with 10% tax.";
+const userMessage = "Get me the activated vendor apps for my orgId 12500006.";
 
 (async (): Promise<void> => {
     let messages: Message[] = [
@@ -68,7 +68,7 @@ const userMessage = "Create one PayPal order for $50 for Premium News service wi
                         name: block.toolUse.name,
                         input: block.toolUse.input
                     };
-                    const result = await paypalToolkit.handleToolCall(toolCall);
+                    const result = await pccToolkit.handleToolCall(toolCall);
                     return {
                         toolResult: {
                         toolUseId: result.toolUseId,

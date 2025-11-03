@@ -1,5 +1,5 @@
 {
-    "name": "paypal-examples-openai",
+    "name": "pcc-examples-openai",
     "version": "0.1.0",
     "description": "",
     "scripts": {
@@ -7,7 +7,7 @@
     },
     "dependencies": {
         "@dotenvx/dotenvx": "^1.32.0",
-        "@paypal/agent-toolkit": "latest",
+        "@fusionforce/agent-toolkit": "latest",
         "openai": "4.86.1"
     },
     "devDependencies": {

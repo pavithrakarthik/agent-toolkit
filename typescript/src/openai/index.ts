@@ -1,4 +1,4 @@
-import PayPalAgentToolkit from "./toolkit";
+import PCCAgentToolkit from "./toolkit";
 import { ALL_TOOLS_ENABLED } from "../shared/tools";
 
-export { PayPalAgentToolkit, ALL_TOOLS_ENABLED }
+export { PCCAgentToolkit, ALL_TOOLS_ENABLED }

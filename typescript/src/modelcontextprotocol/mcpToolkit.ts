@@ -1,13 +1,13 @@
 
 
 import { Configuration, isToolAllowed } from '../shared/configuration';
-import PayPalAPI from '../shared/api';
+import PCCAPI from '../shared/api';
 import tools,  {Tool} from '../shared/tools';
 
 const SOURCE = 'Remote MCP';
 
-class PayPalMCPToolkit {
-  private _paypal: PayPalAPI;
+class PCCMCPToolkit {
+  private _pcc: PCCAPI;
   private readonly filteredTools: Tool[] = [];
 
   constructor({
@@ -18,7 +18,7 @@ class PayPalMCPToolkit {
     configuration: Configuration;
   }) {
  
-    this._paypal = new PayPalAPI(accessToken, { ...configuration.context, source: SOURCE });
+    this._pcc = new PCCAPI(accessToken, { ...configuration.context, source: SOURCE });
     const context = configuration.context || {};
     this.filteredTools = tools(context).filter((tool) =>
       isToolAllowed(tool, configuration)
@@ -29,10 +29,10 @@ class PayPalMCPToolkit {
     return this.filteredTools;
   }
 
-  public getPaypalAPIService(): PayPalAPI {
-    return this._paypal;
+  public getPCCAPIService(): PCCAPI {
+    return this._pcc;
   }
 }
 
-export default PayPalMCPToolkit;
+export default PCCMCPToolkit;
 

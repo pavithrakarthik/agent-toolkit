@@ -1,10 +1,10 @@
 import type { Tool } from 'ai';
 import { tool } from 'ai';
 import { z } from 'zod';
-import PayPalAPI from '../shared/api';
+import PCCAPI from '../shared/api';
 
-export default function PayPalTool(
-  payPalApi: PayPalAPI,
+export default function PCCTool(
+  pccApi: PCCAPI,
   method: string,
   description: string,
   schema: z.ZodObject<any, any, any, any, { [x: string]: any }>
@@ -13,7 +13,7 @@ export default function PayPalTool(
     description: description,
     parameters: schema,
     execute: (arg: z.output<typeof schema>) => {
-      return payPalApi.run(method, arg);
+      return pccApi.run(method, arg);
     },
   });
 }

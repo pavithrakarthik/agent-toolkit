@@ -1,11 +1,11 @@
-import PayPalAgentToolkit from './toolkit';
-import  PayPalMCPToolkit from './mcpToolkit';
-import PayPalAPI from '../shared/api';
+import PCCAgentToolkit from './toolkit';
+import  PCCMCPToolkit from './mcpToolkit';
+import PCCAPI from '../shared/api';
 import {Tool} from '../shared/tools';
 
 export {
-  PayPalAgentToolkit,
-  PayPalMCPToolkit,
-  PayPalAPI,
+  PCCAgentToolkit,
+  PCCMCPToolkit,
+  PCCAPI,
   Tool
 };

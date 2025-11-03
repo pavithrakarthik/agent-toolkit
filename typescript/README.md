@@ -1,62 +1,21 @@
-# PayPal Agent Toolkit
+# PCC Agent Toolkit
 
-The PayPal Agent Toolkit enables popular agent frameworks including OpenAI's Agent SDK, LangChain, Vercel's AI SDK, Model Context Protocol (MCP), and Amazon Bedrock to integrate with PayPal APIs through function calling. It includes support for TypeScript and is built on top of PayPal APIs and the PayPal SDKs.
+The PCC Agent Toolkit enables popular agent frameworks including OpenAI's Agent SDK, LangChain, Vercel's AI SDK, Model Context Protocol (MCP), and Amazon Bedrock to integrate with PCC APIs through function calling. It includes support for TypeScript and is built on top of PCC APIs and the PCC SDKs.
 
 
 ## Available tools
 
-The PayPal Agent toolkit provides the following tools:
+The PCC Agent toolkit provides the following tools:
 
-**Invoices**
 
-- `create_invoice`: Create a new invoice in the PayPal system
-- `list_invoices`: List invoices with optional pagination and filtering
-- `get_invoice`: Retrieve details of a specific invoice
-- `send_invoice`: Send an invoice to recipients
-- `send_invoice_reminder`: Send a reminder for an existing invoice
-- `cancel_sent_invoice`: Cancel a sent invoice
-- `generate_invoice_qr_code`: Generate a QR code for an invoice
+## Available tools
 
-**Payments**
+The PCC Agent toolkit provides the following tools:
 
-- `create_order`: Create an order in PayPal system based on provided details
-- `get_order`: Retrieve the details of an order
-- `pay_order`: Process payment for an authorized order
-- `create_refund`: Process a refund for a captured payment.
-- `get_refund`: Get the details for a specific refund.
+**Healthcare Data Management**
 
-**Dispute Management**
-
-- `list_disputes`: Retrieve a summary of all open disputes
-- `get_dispute`: Retrieve detailed information of a specific dispute
-- `accept_dispute_claim`: Accept a dispute claim
-
-**Shipment Tracking**
-
-- `create_shipment_tracking`: Create a shipment tracking record
-- `get_shipment_tracking`: Retrieve shipment tracking information
-- `update_shipment_tracking`: Update shipment tracking information
-**Catalog Management**
-
-- `create_product`: Create a new product in the PayPal catalog
-- `list_products`: List products with optional pagination and filtering
-- `show_product_details`: Retrieve details of a specific product
-
-**Subscription Management**
-
-- `create_subscription_plan`: Create a new subscription plan
-- `update_plan`: Update an existing plan
-- `list_subscription_plans`: List subscription plans
-- `show_subscription_plan_details`: Retrieve details of a specific subscription plan
-- `create_subscription`: Create a new subscription
-- `show_subscription_details`: Retrieve details of a specific subscription
-- `update_subscription`: update an existing subscription
-- `cancel_subscription`: Cancel an active subscription
-
-**Reporting and Insights**
-
-- `list_transactions`: List transactions with optional pagination and filtering
-- `get_merchant_insights`: Retrieve business intelligence metrics and analytics for a merchant
+- `get_patient_data`: Get patient data from PCC
+- `get_activated_vendor_apps`: Get activated vendor apps from PCC
 
 ## TypeScript
 
@@ -66,7 +25,7 @@ You don't need this source code unless you want to modify the package. If you ju
 want to use the package run:
 
 ```sh
-npm install @paypal/agent-toolkit
+npm install @PCC/agent-toolkit
 ```
 
 #### Requirements
@@ -75,14 +34,14 @@ npm install @paypal/agent-toolkit
 
 ### Usage
 
-The library needs to be configured with your account's client id and secret which is available in your [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/). Use `configuration` to add context as well as to specify which actions should be allowed. 
+The library needs to be configured with your account's client id and secret which is available in your [PCC Developer Dashboard](https://developer.PCC.com/dashboard/). Use `configuration` to add context as well as to specify which actions should be allowed. 
 
 
 ```typescript
-import { PayPalAgentToolkit } from '@paypal/agent-toolkit/ai-sdk';
-const paypalToolkit = new PayPalAgentToolkit({
-  clientId: process.env.PAYPAL_CLIENT_ID,
-  clientSecret: process.env.PAYPAL_CLIENT_SECRET,
+import { PCCAgentToolkit } from '@PCC/agent-toolkit/ai-sdk';
+const PCCToolkit = new PCCAgentToolkit({
+  clientId: process.env.PCC_CLIENT_ID,
+  clientSecret: process.env.PCC_CLIENT_SECRET,
   configuration: {
     actions: {
       invoices: {
@@ -108,10 +67,10 @@ const paypalToolkit = new PayPalAgentToolkit({
 ### Initializing the Workflows
 
 ```typescript
-import { PayPalWorkflows, ALL_TOOLS_ENABLED } from '@paypal/agent-toolkit/ai-sdk';
-const paypalWorkflows = new PayPalWorkflows({
-  clientId: process.env.PAYPAL_CLIENT_ID,
-  clientSecret: process.env.PAYPAL_CLIENT_SECRET,
+import { PCCWorkflows, ALL_TOOLS_ENABLED } from '@PCC/agent-toolkit/ai-sdk';
+const PCCWorkflows = new PCCWorkflows({
+  clientId: process.env.PCC_CLIENT_ID,
+  clientSecret: process.env.PCC_CLIENT_SECRET,
   configuration: {
     actions: ALL_TOOLS_ENABLED,
   },
@@ -124,7 +83,7 @@ const paypalWorkflows = new PayPalWorkflows({
 const llm: LanguageModelV1 = getModel(); // The model to be used with ai-sdk
 const { text: response } = await generateText({
   model: llm,
-  tools: paypalToolkit.getTools(),
+  tools: PCCToolkit.getTools(),
   maxSteps: 10,
   prompt: `Create an order for $50 for custom handcrafted item and get the payment link.`,
 });
@@ -138,13 +97,13 @@ const { text: response } = await generateText({
 let messages: ChatCompletionMessageParam[] = [
     {
         role: "user",
-        content: "Create an PayPal order for $50 for Premium News service.",
+        content: "Create an PCC order for $50 for Premium News service.",
     },
 ];
 const completion = await llm.chat.completions.create({
     model: "gpt-4o",
     messages,
-    tools: paypalToolkit.getTools(),
+    tools: PCCToolkit.getTools(),
 });
 ```
 
@@ -161,7 +120,7 @@ const result = await agent.invoke(
     {
         messages: [{
             role: "user",
-            content: "Create an PayPal order for $50 for Premium News service."
+            content: "Create an PCC order for $50 for Premium News service."
         }]
     }
 );
@@ -171,7 +130,7 @@ const result = await agent.invoke(
 ### Using the toolkit
 
 ```typescript
-const userMessage = "Create one PayPal order for $50 for Premium News service with 10% tax.";
+const userMessage = "Create one PCC order for $50 for Premium News service with 10% tax.";
 let messages: Message[] = [
     {
         role: "user",
@@ -189,41 +148,41 @@ const response = await client.send(
 );
 ```
 
-## PayPal Model Context Protocol
+## PCC Model Context Protocol
 
-The PayPal [Model Context Protocol](https://modelcontextprotocol.com/) server allows you to integrate with PayPal APIs through function calling. This protocol supports various tools to interact with different PayPal services.
+The PCC [Model Context Protocol](https://modelcontextprotocol.com/) server allows you to integrate with PCC APIs through function calling. This protocol supports various tools to interact with different PCC services.
 
 ### Running MCP Inspector
 
-To run the PayPal MCP server using npx, use the following command:
+To run the PCC MCP server using npx, use the following command:
 
 ```bash
-npx -y @paypal/mcp --tools=all PAYPAL_ACCESS_TOKEN="YOUR_ACCESS_TOKEN" PAYPAL_ENVIRONMENT="SANDBOX"
+npx -y @PCC/mcp --tools=all PCC_ACCESS_TOKEN="YOUR_ACCESS_TOKEN" PCC_ENVIRONMENT="SANDBOX"
 ```
 
-Replace `YOUR_ACCESS_TOKEN` with active access token generated using these steps: [PayPal access token](#generating-an-access-token). Alternatively, you could set the PAYPAL_ACCESS_TOKEN in your environment variables.
+Replace `YOUR_ACCESS_TOKEN` with active access token generated using these steps: [PCC access token](#generating-an-access-token). Alternatively, you could set the PCC_ACCESS_TOKEN in your environment variables.
 
 ### Custom MCP Server
 You can set up your own MCP server. For example:
 
 ```typescript
-import { PayPalAgentToolkit } from “@paypal/agent-toolkit/modelcontextprotocol";
+import { PCCAgentToolkit } from “@PCC/agent-toolkit/modelcontextprotocol";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
-const orderSummary = await paypalWorkflows.generateOrder(
+const orderSummary = await PCCWorkflows.generateOrder(
   llm,
   transactionInfo,
   merchantInfo,
 );
 
-const server = new PayPalAgentToolkit({
-  accessToken: process.env.PAYPAL_ACCESS_TOKEN
+const server = new PCCAgentToolkit({
+  accessToken: process.env.PCC_ACCESS_TOKEN
 });
 
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("PayPal MCP Server running on stdio");
+  console.error("PCC MCP Server running on stdio");
 }
 
 main().catch((error) => {
@@ -234,7 +193,7 @@ main().catch((error) => {
 
 ### Usage with MCP host (Claude Desktop/Cline/Cursor/Github Co-Pilot)
 
-This guide explains how to integrate the PayPal connector with Claude Desktop.
+This guide explains how to integrate the PCC connector with Claude Desktop.
 
 ## Prerequisites
 - Claude Desktop application installed
@@ -244,70 +203,70 @@ This guide explains how to integrate the PayPal connector with Claude Desktop.
 
 ### 1. Install Node.js
 
-Node.js is required for the PayPal connector to function:
+Node.js is required for the PCC connector to function:
 
 1. Visit the [Node.js official website](https://nodejs.org/), download and install it.
 2. Requirements: Node 18+
 
-### 2. Configure PayPal Connector with MCP host (Claude desktop / Cursor / Cline)
+### 2. Configure PCC Connector with MCP host (Claude desktop / Cursor / Cline)
 We will show the integration with Claude desktop. You can use your favorite MCP host.
 1. Open Claude Desktop
 2. Navigate to Settings
 3. Find the Developer or Advanced settings section
 4. Locate the external tools or connectors configuration area
-5. Add the following PayPal connector configuration to this ~/Claude/claude_desktop_config.json:
+5. Add the following PCC connector configuration to this ~/Claude/claude_desktop_config.json:
 
 ```json
 {
    "mcpServers": {
-     "paypal": {
+     "PCC": {
        "command": "npx",
        "args": [
          "-y",
-         "@paypal/mcp",
+         "@PCC/mcp",
          "--tools=all"
        ],
        "env": {
-         "PAYPAL_ACCESS_TOKEN": "YOUR_PAYPAL_ACCESS_TOKEN",
-         "PAYPAL_ENVIRONMENT": "SANDBOX"
+         "PCC_ACCESS_TOKEN": "YOUR_PCC_ACCESS_TOKEN",
+         "PCC_ENVIRONMENT": "SANDBOX"
        }
      }
    }
 }
 ```
-Make sure to replace `YOUR_PAYPAL_ACCESS_TOKEN` with your actual PayPal Access Token. Alternatively, you could set the PAYPAL_ACCESS_TOKEN as an environment variable. You can also pass it as an argument using --access-token in "args"
-Set `PAYPAL_ENVIRONMENT` value as either `SANDBOX` for stage testing and `PRODUCTION` for production environment.
+Make sure to replace `YOUR_PCC_ACCESS_TOKEN` with your actual PCC Access Token. Alternatively, you could set the PCC_ACCESS_TOKEN as an environment variable. You can also pass it as an argument using --access-token in "args"
+Set `PCC_ENVIRONMENT` value as either `SANDBOX` for stage testing and `PRODUCTION` for production environment.
 
 6. Save your configuration changes
 
 ### 3. Test the Integration
 
 1. Quit and restart Claude Desktop to apply changes
-2. Test the connection by asking Claude to perform a PayPal-related task
-   - Example: \"List my PayPal invoices\"
+2. Test the connection by asking Claude to perform a PCC-related task
+   - Example: \"List my PCC invoices\"
 
 ## Environment Variables
 
 The following environment variables can be used:
 
-- `PAYPAL_ACCESS_TOKEN`: Your PayPal Access Token
-- `PAYPAL_ENVIRONMENT`: Set to `SANDBOX` for sandbox mode, `PRODUCTION` for production (defaults to `SANDBOX` mode)
+- `PCC_ACCESS_TOKEN`: Your PCC Access Token
+- `PCC_ENVIRONMENT`: Set to `SANDBOX` for sandbox mode, `PRODUCTION` for production (defaults to `SANDBOX` mode)
 
 
-This guide explains how to generate an access token for PayPal API integration, including how to find your client ID and client secret.
+This guide explains how to generate an access token for PCC API integration, including how to find your client ID and client secret.
 
 
 
 ## Prerequisites
 
-- PayPal Developer account (for Sandbox)
-- PayPal Business account (for production)
+- PCC Developer account (for Sandbox)
+- PCC Business account (for production)
 
 ## Finding Your Client ID and Client Secret
 
-1. **Create a PayPal Developer Account**:
-   - Go to [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/)
-   - Sign up or log in with your PayPal credentials
+1. **Create a PCC Developer Account**:
+   - Go to [PCC Developer Dashboard](https://developer.PCC.com/dashboard/)
+   - Sign up or log in with your PCC credentials
 
 2. **Access Your Credentials**:
    - In the Developer Dashboard, click on **Apps & Credentials** in the menu
@@ -328,19 +287,19 @@ This guide explains how to generate an access token for PayPal API integration, 
 ### Using cURL
 
 ```bash
-curl -v https://api-m.sandbox.paypal.com/v1/oauth2/token \\
+curl -v https://api-m.sandbox.PCC.com/v1/oauth2/token \\
   -H \"Accept: application/json\" \\
   -H \"Accept-Language: en_US\" \\
   -u \"CLIENT_ID:CLIENT_SECRET\" \\
   -d \"grant_type=client_credentials\"
 ```
 
-Replace `CLIENT_ID` and `CLIENT_SECRET` with your actual credentials. For production, use `https://api-m.paypal.com` instead of the sandbox URL.
+Replace `CLIENT_ID` and `CLIENT_SECRET` with your actual credentials. For production, use `https://api-m.PCC.com` instead of the sandbox URL.
 
 
 ### Using Postman
 
-1. Create a new request to `https://api-m.sandbox.paypal.com/v1/oauth2/token`
+1. Create a new request to `https://api-m.sandbox.PCC.com/v1/oauth2/token`
 2. Set method to **POST**
 3. Under **Authorization**, select **Basic Auth** and enter your Client ID and Client Secret
 4. Under **Body**, select **x-www-form-urlencoded** and add a key `grant_type` with value `client_credentials`
@@ -371,13 +330,13 @@ Copy the `access_token` value for use in your Claude Desktop integration.
 
 ## Using the Token with Claude Desktop
 
-Once you have your access token, update the `PAYPAL_ACCESS_TOKEN` value in your Claude Desktop connector configuration:
+Once you have your access token, update the `PCC_ACCESS_TOKEN` value in your Claude Desktop connector configuration:
 
 ```json
 {
   "env": {
-    "PAYPAL_ACCESS_TOKEN": "YOUR_NEW_ACCESS_TOKEN",
-    "PAYPAL_ENVIRONMENT": "SANDBOX"
+    "PCC_ACCESS_TOKEN": "YOUR_NEW_ACCESS_TOKEN",
+    "PCC_ENVIRONMENT": "SANDBOX"
   }
 }
 ```
@@ -390,5 +349,5 @@ Once you have your access token, update the `PAYPAL_ACCESS_TOKEN` value in your 
 4. Avoid hardcoding tokens in application code
 
 ## Disclaimer
-*AI-generated content may be inaccurate or incomplete. Users are responsible for independently verifying any information before relying on it. PayPal makes no guarantees regarding output accuracy and is not liable for any decisions, actions, or consequences resulting from its use.*
+*AI-generated content may be inaccurate or incomplete. Users are responsible for independently verifying any information before relying on it. PCC makes no guarantees regarding output accuracy and is not liable for any decisions, actions, or consequences resulting from its use.*
 

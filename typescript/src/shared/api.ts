@@ -1,24 +1,25 @@
 import {
   getPatientData,
-  getActivatedVendorApps
+  getActivatedVendorApps,
+  getFacs
 } from './functions';
 
 import type { Context } from './configuration';
-import PayPalClient from './client';
+import PCCClient from './client';
 import {LlmError} from "./llmError"
 
-class PayPalAPI {
-  paypalClient: PayPalClient;
+class PCCAPI {
+  pccClient: PCCClient;
   context: Context;
   accessToken?: string;
 
-  constructor(paypalClientOrAccessToken: PayPalClient | string, context?: Context) {
+  constructor(pccClientOrAccessToken: PCCClient | string, context?: Context) {
     this.context = context || {};
-    if (typeof paypalClientOrAccessToken === 'string') {
-      this.accessToken = paypalClientOrAccessToken;
-      this.paypalClient = new PayPalClient({context: this.context, accessToken: this.accessToken });
+    if (typeof pccClientOrAccessToken === 'string') {
+      this.accessToken = pccClientOrAccessToken;
+      this.pccClient = new PCCClient({context: this.context, accessToken: this.accessToken });
     } else {
-      this.paypalClient = paypalClientOrAccessToken;
+      this.pccClient = pccClientOrAccessToken;
     }
 
     
@@ -39,7 +40,7 @@ class PayPalAPI {
       return JSON.stringify({
         error: {
           message: errorMessage,
-          type: 'paypal_error',
+          type: 'pcc_error',
         },
       });
     }
@@ -48,14 +49,16 @@ class PayPalAPI {
   private async executeMethod(method: string, arg: any): Promise<any> {
     
     switch (method) {
-      case 'get_data':
-        return getPatientData(this.paypalClient, this.context);
+      case 'get_patient_data':
+        return getPatientData(this.pccClient, this.context, arg);
       case 'get_activated_vendor_apps':
-        return getActivatedVendorApps(this.paypalClient, this.context, arg);
+        return getActivatedVendorApps(this.pccClient, this.context, arg);
+      case 'get_facs':
+        return getFacs(this.pccClient, this.context, arg);
       default:
         throw new Error(`Invalid method: ${method}`);
     }
   }
 }
 
-export default PayPalAPI;
+export default PCCAPI;

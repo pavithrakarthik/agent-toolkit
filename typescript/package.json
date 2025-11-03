@@ -57,7 +57,6 @@
     "@langchain/core": "0.3.6",
     "openai": "4.86.1",
     "@modelcontextprotocol/sdk": "^1.6.1",
-    "@paypal/paypal-server-sdk": "^1.0.0",
     "ai": "^4.0.23",
     "axios": "^1.8.4",
     "debug": "^4.4.0",

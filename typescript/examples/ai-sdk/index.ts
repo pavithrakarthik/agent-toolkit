@@ -1,7 +1,7 @@
 import {config} from '@dotenvx/dotenvx';
-import {createOpenAI} from '@ai-sdk/openai';
+import {createOpenAI, openai} from '@ai-sdk/openai';
 import {generateText} from 'ai';
-import {PayPalWorkflows, PayPalAgentToolkit, ALL_TOOLS_ENABLED} from '@fusionforce/agent-toolkit/ai-sdk';
+import {PCCWorkflows, PCCAgentToolkit, ALL_TOOLS_ENABLED} from '@fusionforce/agent-toolkit/ai-sdk';
 
 // Get the env file path from an environment variable, with a default fallback
 const envFilePath = process.env.ENV_FILE_PATH || '.env';
@@ -32,24 +32,24 @@ const azureOpenai = createOpenAI({
 });
 
 /*
- * This holds all the configuration required for starting PayPal Agent Toolkit
+ * This holds all the configuration required for starting PCC Agent Toolkit
  */
 
 const ppConfig = {
-    clientId: process.env.PAYPAL_CLIENT_ID || '',
-    clientSecret: process.env.PAYPAL_CLIENT_SECRET || '',
+    clientId: process.env.PCC_CLIENT_ID || '',
+    clientSecret: process.env.PCC_CLIENT_SECRET || '',
     configuration: {
         actions: ALL_TOOLS_ENABLED
     }
 }
 /*
- * This holds all the tools that use PayPal functionality
+ * This holds all the tools that use PCC functionality
  */
-const paypalToolkit = new PayPalAgentToolkit(ppConfig);
+const pccToolkit = new PCCAgentToolkit(ppConfig);
 /*
- * This holds all the preconfigured common PayPal workflows
+ * This holds all the preconfigured common PCC workflows
  */
-const paypalWorkflows = new PayPalWorkflows(ppConfig)
+const pccWorkflows = new PCCWorkflows(ppConfig)
 
 /*
  * This is the merchant's typical use case. This stays the same for most requests.
@@ -64,7 +64,16 @@ const llm = azureOpenai('gpt-4o-mini');
 
     const userPrompt = `Get me the activated vendor apps for my orgId 12500006.`;
 
-    // Invoke preconfigured workflows that will orchestrate across multiple calls.
-    const summary = await paypalWorkflows.getActivatedVendorApps(llm, userPrompt, systemPrompt);
+    // // Invoke preconfigured workflows that will orchestrate across multiple calls.
+    // const summary = await pccWorkflows.getActivatedVendorApps(llm, userPrompt, systemPrompt);
+    // console.log(summary);
+
+        // (or) Invoke through toolkit for specific use-cases
+    const {text: summary} = await generateText({
+        model: llm,
+        tools: pccToolkit.getTools(),
+        maxSteps: 10,
+        prompt: userPrompt,
+    });
     console.log(summary);
 })();

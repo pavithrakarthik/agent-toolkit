@@ -1,15 +1,15 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol.js';
 import { Configuration, isToolAllowed } from '../shared/configuration';
-import PayPalAPI from '../shared/api';
+import PCCAPI from '../shared/api';
 import tools from '../shared/tools';
 import { version } from '../../package.json';
 
 
 const SOURCE = 'MCP';
 
-class PayPalAgentToolkit extends McpServer {
-  private _paypal: PayPalAPI;
+class PCCAgentToolkit extends McpServer {
+  private _pcc: PCCAPI;
 
   constructor({
     accessToken,
@@ -19,11 +19,11 @@ class PayPalAgentToolkit extends McpServer {
     configuration: Configuration;
   }) {
     super({
-      name: 'PayPal',
+      name: 'PCC',
       version: version,
     });
 
-    this._paypal = new PayPalAPI(accessToken, { ...configuration.context, source: SOURCE });
+    this._pcc = new PCCAPI(accessToken, { ...configuration.context, source: SOURCE });
 
     const context = configuration.context || {};
     const filteredTools = tools(context).filter((tool) =>
@@ -36,7 +36,7 @@ class PayPalAgentToolkit extends McpServer {
         tool.description,
         tool.parameters.shape,
         async (arg: any, _extra: RequestHandlerExtra<any, any>) => {
-          const result = await this._paypal.run(tool.method, arg);
+          const result = await this._pcc.run(tool.method, arg);
           return {
             content: [
               {
@@ -51,4 +51,4 @@ class PayPalAgentToolkit extends McpServer {
   }
 }
 
-export default PayPalAgentToolkit;
+export default PCCAgentToolkit;

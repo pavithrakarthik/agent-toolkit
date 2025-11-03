@@ -1,5 +1,5 @@
-import PayPalAPI from "../shared/api";
-import PayPalClient from "../shared/client";
+import PCCAPI from "../shared/api";
+import PCCClient from "../shared/client";
 import { Configuration, isToolAllowed } from "../shared/configuration";
 import tools from "../shared/tools";
 import { zodToJsonSchema } from "zod-to-json-schema";
@@ -29,9 +29,9 @@ export interface BedrockToolResult {
     }>;
 }
 
-class PayPalAgentToolkit {
-    readonly client: PayPalClient;
-    private _paypal: PayPalAPI;
+class PCCAgentToolkit {
+    readonly client: PCCClient;
+    private _pcc: PCCAPI;
     tools: BedrockTool[];
 
     constructor({ clientId, clientSecret, configuration, }: {
@@ -40,11 +40,11 @@ class PayPalAgentToolkit {
         configuration: Configuration;
     }) {
         const context = configuration.context || {};
-        this.client = new PayPalClient({ clientId: clientId, clientSecret: clientSecret, context: {...context, source: SOURCE }});
+        this.client = new PCCClient({ clientId: clientId, clientSecret: clientSecret, context: {...context, source: SOURCE }});
         const filteredTools = tools(context).filter((tool) => 
             isToolAllowed(tool, configuration)
         );
-        this._paypal = new PayPalAPI(this.client, configuration.context);
+        this._pcc = new PCCAPI(this.client, configuration.context);
         this.tools = filteredTools.map((tool) => ({
             toolSpec: {
                 name: tool.method,
@@ -61,7 +61,7 @@ class PayPalAgentToolkit {
     }
 
     async handleToolCall(toolCall: BedrockToolBlock): Promise<BedrockToolResult> {
-        const response = await this._paypal.run(toolCall.name, toolCall.input);
+        const response = await this._pcc.run(toolCall.name, toolCall.input);
         return {
             toolUseId: toolCall.toolUseId,
             content: [
@@ -73,4 +73,4 @@ class PayPalAgentToolkit {
     }
 }
 
-export default PayPalAgentToolkit;
+export default PCCAgentToolkit;

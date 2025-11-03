@@ -1,5 +1,5 @@
-import PayPalAPI from "../shared/api";
-import PayPalClient from "../shared/client";
+import PCCAPI from "../shared/api";
+import PCCClient from "../shared/client";
 import { Configuration, isToolAllowed } from "../shared/configuration";
 import tools from "../shared/tools";
 import {zodToJsonSchema} from "zod-to-json-schema";
@@ -7,9 +7,9 @@ import {ChatCompletionTool, ChatCompletionMessageToolCall, ChatCompletionToolMes
 
 const SOURCE = "OPENAI";
 
-class PayPalAgentToolkit {
-    readonly client: PayPalClient;
-    private _paypal: PayPalAPI;
+class PCCAgentToolkit {
+    readonly client: PCCClient;
+    private _pcc: PCCAPI;
     tools: ChatCompletionTool[];
 
     constructor({ clientId, clientSecret, configuration, }: {
@@ -18,11 +18,11 @@ class PayPalAgentToolkit {
         configuration: Configuration;
     }) {
         const context = configuration.context || {};
-        this.client = new PayPalClient({ clientId: clientId, clientSecret: clientSecret, context: {...context, source: SOURCE }});
+        this.client = new PCCClient({ clientId: clientId, clientSecret: clientSecret, context: {...context, source: SOURCE }});
         const filteredTools = tools(context).filter((tool) => 
             isToolAllowed(tool, configuration)
         );
-        this._paypal = new PayPalAPI(this.client, configuration.context);
+        this._pcc = new PCCAPI(this.client, configuration.context);
         this.tools = filteredTools.map((tool) => ({
             type: 'function',
             function: {
@@ -39,7 +39,7 @@ class PayPalAgentToolkit {
 
     async handleToolCall(toolCall: ChatCompletionMessageToolCall) {
         const args = JSON.parse(toolCall.function.arguments);
-        const response = await this._paypal.run(toolCall.function.name, args);
+        const response = await this._pcc.run(toolCall.function.name, args);
         return {
             role: 'tool', 
             tool_call_id: toolCall.id,
@@ -48,4 +48,4 @@ class PayPalAgentToolkit {
     }
 }
 
-export default PayPalAgentToolkit;
+export default PCCAgentToolkit;

@@ -1,6 +1,6 @@
 import { config } from '@dotenvx/dotenvx';
 import { ChatOpenAI } from '@langchain/openai';
-import { PayPalAgentToolkit, ALL_TOOLS_ENABLED} from '@paypal/agent-toolkit/langchain';
+import { PCCAgentToolkit, ALL_TOOLS_ENABLED} from '@fusionforce/agent-toolkit/langchain';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 
 const envFilePath = process.env.ENV_FILE_PATH || '.env';
@@ -12,15 +12,15 @@ const llm = new ChatOpenAI({
   });
 
 const ppConfig = {
-    clientId: process.env.PAYPAL_CLIENT_ID || '',
-    clientSecret: process.env.PAYPAL_CLIENT_SECRET || '',
+    clientId: process.env.PCC_CLIENT_ID || '',
+    clientSecret: process.env.PCC_CLIENT_SECRET || '',
     configuration: {
         actions: ALL_TOOLS_ENABLED
     }
 }
 
-const paypalToolkit = new PayPalAgentToolkit(ppConfig);
-let tools = paypalToolkit.getTools();
+const pccToolkit = new PCCAgentToolkit(ppConfig);
+let tools = pccToolkit.getTools();
 
 (async () => {
     const agent = createReactAgent({
@@ -32,7 +32,7 @@ let tools = paypalToolkit.getTools();
         {
             messages: [{
                 role: "user",
-                content: "Create an PayPal order for $50 for Premium News service."
+                content: "Get me the activated vendor apps for my orgId 12500006."
             }]
         }
     );

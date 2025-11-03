@@ -1,12 +1,12 @@
 import { generateObject, generateText, LanguageModelV1 } from 'ai';
 
 import { z } from "zod";
-import { PayPalAgentToolkit } from "./";
+import { PCCAgentToolkit } from "./";
 import { getActivatedVendorAppsParameters, getPatientDataParameters } from '../shared/parameters';
 import { Configuration } from '../shared/configuration';
 
-class PayPalWorkflows {
-    readonly toolkit: PayPalAgentToolkit;
+class PCCWorkflows {
+    readonly toolkit: PCCAgentToolkit;
     log?: (message: any) => void;
 
     constructor({ clientId, clientSecret, configuration, log }: {
@@ -16,7 +16,7 @@ class PayPalWorkflows {
         log?: (message: any) => void
     }) {
         this.log = log || console.log
-        this.toolkit = new PayPalAgentToolkit({
+        this.toolkit = new PCCAgentToolkit({
             clientId,
             clientSecret,
             configuration,
@@ -34,15 +34,15 @@ class PayPalWorkflows {
         });
         this.log!(`Response 1: I have now created the request object with provided details;\n ${JSON.stringify(patientDataObject)}`);
         this.log!(`Proceeding with next step.`)
-        this.log!(`Step 2: I am now choosing the correct tool from PayPal's toolkit to retrieve patient data using the generated object from previous step.`);
+        this.log!(`Step 2: I am now choosing the correct tool from PCC's toolkit to retrieve org information using the generated object from previous step.`);
         const { text: orderId } = await generateText({
             model: llm,
             tools: this.toolkit.getTools(),
             maxSteps: 10,
-            prompt: `Retrieve the patient data with the following details: ${JSON.stringify(patientDataObject)}.`,
+            prompt: `Retrieve the org information with the following details: ${JSON.stringify(patientDataObject)}.`,
         });
-        this.log!(`Response 2: I have retrieved the patient data successfully: ${orderId}.`);
-        const summary = `The patient data has been retrieved successfully: ${orderId}.`;
+        this.log!(`Response 2: I have retrieved the org information successfully: ${orderId}.`);
+        const summary = `The org information has been retrieved successfully: ${orderId}.`;
         this.log!(`Output: ${summary}`);
         return summary;
     }
@@ -58,7 +58,7 @@ class PayPalWorkflows {
         });
         this.log!(`Response 1: I have now created the request object with provided details;\n ${JSON.stringify(activatedVendorAppsObject)}`);
         this.log!(`Proceeding with next step.`)
-        this.log!(`Step 2: I am now choosing the correct tool from PayPal's toolkit to retrieve activated vendor apps using the generated object from previous step.`);
+        this.log!(`Step 2: I am now choosing the correct tool from PCC's toolkit to retrieve activated vendor apps using the generated object from previous step.`);
         const { text: orderId } = await generateText({
             model: llm,
             tools: this.toolkit.getTools(),
@@ -72,4 +72,4 @@ class PayPalWorkflows {
     }
 }
 
-export default PayPalWorkflows;
+export default PCCWorkflows;

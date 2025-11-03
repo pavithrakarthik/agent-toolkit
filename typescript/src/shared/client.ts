@@ -1,4 +1,3 @@
-import { Client, Environment, LogLevel } from '@paypal/paypal-server-sdk';
 import axios from 'axios';
 import { Buffer } from 'buffer';
 import os from 'os';
@@ -9,8 +8,7 @@ import debug from "debug";
 
 const logger = debug('agent-toolkit:client');
 
-class PayPalClient {
-    private _sdkClient: Client | undefined;
+class PCCClient {
     private _clientId: string | undefined;
     private _clientSecret: string | undefined;
     private _isSandbox: boolean;
@@ -43,40 +41,15 @@ class PayPalClient {
         this._isSandbox = this._context?.sandbox ?? false;
         this._accessToken = accessToken;
         if (this._clientId !== undefined && this._clientSecret !== undefined) {
-            this.createSDKClient(this._clientId, this._clientSecret, debugSdk);
+            // PCC client setup would go here if needed
         }
 
         this._baseUrl = this._isSandbox
-        ? 'https://api.sandbox.paypal.com'
-        : 'https://api.paypal.com';
+        ? 'https://iureqa.pointclickcare.com'
+        : 'https://iure.pointclickcare.com';
 
-        logger(`[PayPal Setttings] Environment: ${this._isSandbox ? "Sandbox" : "Live"}`);
-        logger(`[PayPal Setttings] API Base: ${this._baseUrl}`);
-    }
-
-    private createSDKClient(clientId: string, clientSecret: string, debugSdk: boolean) {
-
-        this._sdkClient = new Client({
-            clientCredentialsAuthCredentials: {
-                oAuthClientId: clientId,
-                oAuthClientSecret: clientSecret
-            },
-            timeout: 0,
-            environment: this._isSandbox ? Environment.Sandbox : Environment.Production,
-            ...(debugSdk && {
-                logging: {
-                    logLevel: LogLevel.Info,
-                    maskSensitiveHeaders: true,
-                    logRequest: {
-                        logBody: true,
-                    },
-                    logResponse: {
-                        logBody: true,
-                        logHeaders: true,
-                    },
-                }
-            }),
-        });
+        logger(`[PCC Settings] Environment: ${this._isSandbox ? "Sandbox" : "Live"}`);
+        logger(`[PCC Settings] API Base: ${this._baseUrl}`);
     }
 
     async getAccessToken(): Promise<string> {
@@ -126,7 +99,7 @@ class PayPalClient {
 
     private generateUserAgent(): string {
         const components = [
-            `PayPal Agent Toolkit Typescript: ${this._context.source}`,
+            `PCC Agent Toolkit Typescript: ${this._context.source}`,
             `Version: ${version}`,
             `on OS: ${os.platform()} ${os.release()}`
         ];
@@ -136,4 +109,4 @@ class PayPalClient {
 
 }
 
-export default PayPalClient;
+export default PCCClient;

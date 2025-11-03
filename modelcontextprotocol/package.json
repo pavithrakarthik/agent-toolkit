@@ -1,7 +1,7 @@
 {
-  "name": "@paypal/mcp",
+  "name": "@fusionforce/mcp",
   "version": "1.8.0",
-  "description": "A command line tool for setting up PayPal MCP server",
+  "description": "A command line tool for setting up PCC MCP server",
   "bin": "dist/index.js",
   "files": [
     "dist/index.js",
@@ -25,7 +25,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.6.1",
     "colors": "^1.4.0",
-    "@paypal/agent-toolkit": "latest"
+    "@fusionforce/agent-toolkit": "latest"
   },
   "imports": {
     "#sdk/*": "@modelcontextprotocol/sdk/dist/esm/*"
@@ -33,9 +33,9 @@
   "keywords": [
     "mcp",
     "modelcontextprotocol",
-    "paypal"
+    "pcc"
   ],
-  "author": "PayPal <support@paypal.com> (https://paypal.com/)",
+  "author": "PCC <support@pointclickcare.com> (https://pointclickcare.com/)",
   "devDependencies": {
     "@eslint/compat": "^1.2.6",
     "@types/colors": "^1.1.3",

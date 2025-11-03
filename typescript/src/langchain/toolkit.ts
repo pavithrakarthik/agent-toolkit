@@ -1,20 +1,20 @@
 /**
- * PayPal Agent LangChain Toolkit in TypeScript
+ * PCC Agent LangChain Toolkit in TypeScript
  */
 
 import {BaseToolkit} from "@langchain/core/tools";
-import PayPalAPI from "../shared/api";
-import PayPalClient from "../shared/client";
+import PCCAPI from "../shared/api";
+import PCCClient from "../shared/client";
 import { Configuration, isToolAllowed } from "../shared/configuration";
 import tools from "../shared/tools";
-import PayPalTool from "./tool";
+import PCCTool from "./tool";
 
 const SOURCE = "LANGCHAIN";
 
-class PayPalAgentToolkit implements BaseToolkit {
-    readonly client: PayPalClient;
-    private _paypal: PayPalAPI;
-    tools: PayPalTool[];
+class PCCAgentToolkit implements BaseToolkit {
+    readonly client: PCCClient;
+    private _pcc: PCCAPI;
+    tools: PCCTool[];
 
     constructor({ clientId, clientSecret, configuration, }: {
         clientId: string,
@@ -22,15 +22,15 @@ class PayPalAgentToolkit implements BaseToolkit {
         configuration: Configuration;
     }) {
         const context = configuration.context || {};
-        this.client = new PayPalClient({ clientId: clientId, clientSecret: clientSecret, context: { ...context, source: SOURCE }});
+        this.client = new PCCClient({ clientId: clientId, clientSecret: clientSecret, context: { ...context, source: SOURCE }});
         const filteredTools = tools(context).filter((tool) =>
             isToolAllowed(tool, configuration)
         ); 
-        this._paypal = new PayPalAPI(this.client, configuration.context);
+        this._pcc = new PCCAPI(this.client, configuration.context);
         this.tools = filteredTools.map(
             (tool) =>
-                new PayPalTool(
-                    this._paypal, 
+                new PCCTool(
+                    this._pcc, 
                     tool.method,
                     tool.name,
                     tool.description,
@@ -39,9 +39,9 @@ class PayPalAgentToolkit implements BaseToolkit {
         );
     }
 
-    getTools(): PayPalTool[] {
+    getTools(): PCCTool[] {
         return this.tools;
     }
 }
 
-export default PayPalAgentToolkit;
+export default PCCAgentToolkit;
