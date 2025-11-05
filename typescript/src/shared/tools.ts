@@ -43,6 +43,7 @@ const tools = (context: Context): Tool[] => [
     parameters: getFacsParameters(context),
     actions: {
       facilities: {
+        post: true,
         get: true,
       },
     },

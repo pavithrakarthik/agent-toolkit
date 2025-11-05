@@ -30,3 +30,31 @@ export const getFacsParameters = (context: Context) => z.object({
   org_id: z.string()
     .describe('The ID of the org to retrieve FACS for.')
 });
+
+export const schemaOrgDataList = () => z.array(z.object({
+  org_id: z.string()
+    .describe('The ID of the org to retrieve FACS for.'),
+  fac_id: z.string()
+    .describe('The ID of the facility to retrieve FACS for.'),
+  facility_name: z.string()
+    .describe('The name of the facility.'),
+  health_type: z.string()
+    .describe('The health type of the facility.'),
+  patient_id: z.string()
+    .describe('The ID of the patient.'),
+  firstName: z.string()
+    .describe('The first name of the patient.'),
+  lastName: z.string()
+    .describe('The last name of the patient.'),
+  patientStatus: z.string()
+    .describe('The patient status.'),
+}));
+
+export const schemaFacilityList = () => z.array(z.object({
+  fac_id: z.string()
+    .describe('The ID of the facility to retrieve FACS for.'),
+  facility_name: z.string()
+    .describe('The name of the facility.'),
+  health_type: z.string()
+    .describe('The health type of the facility.'),
+}));

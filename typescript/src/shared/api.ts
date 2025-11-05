@@ -54,11 +54,11 @@ class PCCAPI {
         return getPatientData(this.pccClient, this.context, arg);
       case 'get_activated_vendor_apps':
         return getActivatedVendorApps(this.pccClient, this.context, arg);
-      case 'get_facs':
+      case 'get_facility_data':
         return getFacs(this.pccClient, this.context, arg);
       case 'get_org_info':
         return getOrgInfo(this.pccClient, this.context, arg);
-      default:
+      default:  
         throw new Error(`Invalid method: ${method}`);
     }
   }

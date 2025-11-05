@@ -71,7 +71,9 @@ export async function getPatientData(
     //get only patient ids and patient status for the response
     const patientData = response.data.data.map((patient: any) => ({
       id: patient.id,
-      status: patient.status,
+      firstName: patient.firstName,
+      lastName: patient.lastName,
+      patientStatus: patient.patientStatus,
     }));
     logger(`[getPatientData] Patient data retrieved successfully. Status: ${response.status}`);
     return patientData;
@@ -109,19 +111,25 @@ export async function getFacs(
   context: Context,
   params: TypeOf<ReturnType<typeof import('./parameters').getFacsParameters>>
 ) {
-  console.log('[getFacs] Starting to get FACS with context:', JSON.stringify(context));
+  console.log('[getFacs] Starting to get FACS with context:', JSON.stringify(params));
 
   const headers = await client.getHeaders();
-  console.log('[getFacs] Headers obtained:', JSON.stringify(headers));
-
-  const url = `https://iureqa.pointclickcare.com/api/internal/preview1/orgs/${params.org_id}/facs/${params.fac_id}`;
-
+  const url = `https://iureqa.pointclickcare.com/api/internal/preview1/orgs/${params.org_id}/facility-search`;
+  //add body json
+  const body = {
+    };
   // Make API call
   try {
     console.log('[getFacs] Sending request to PCC API:', url);
-    const response = await axios.get(url, { headers });
-    console.log(`[getFacs] FACS retrieved successfully. Status: ${response.status}`);
-    return response.data;
+    const response = await axios.post(url, body, { headers });
+    console.log(`[getFacs] FACS retrieved successfully. Facs: ${JSON.stringify(response.data)}`);
+    //extract only facId, facilityName and healthType from each facs in response.data
+    const facs = response.data.data.map((fac: any) => ({
+      facId: fac.facId,
+      facilityName: fac.facilityName,
+      healthType: fac.healthType,
+    }));
+    return facs;
   } catch (error: any) {
     console.log('[getFacs] Error getting FACS:', error.message);
     handleAxiosError(error);
