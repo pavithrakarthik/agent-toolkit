@@ -2,14 +2,15 @@ import { z } from 'zod';
 
 import {
   getPatientDataPrompt,
-  getActivatedVendorAppsPrompt
+  getActivatedVendorAppsPrompt,
+  getOrgInfoPrompt,
+  getFacilityDataPrompt,
 } from './prompts';
 
-import { getActivatedVendorAppsParameters, getPatientDataParameters
+import { getActivatedVendorAppsParameters, getOrgInfoParameters, getPatientDataParameters, getFacsParameters
 } from './parameters';
 
 import type { Context } from './configuration';
-import { get } from 'lodash';
 
 export type Tool = {
   method: string;
@@ -31,6 +32,28 @@ const tools = (context: Context): Tool[] => [
     parameters: getPatientDataParameters(context),
     actions: {
       patients: {
+        get: true,
+      },
+    },
+  },
+  {
+    method: 'get_facility_data',
+    name: 'Get Facility Data',
+    description: getFacilityDataPrompt(context),
+    parameters: getFacsParameters(context),
+    actions: {
+      facilities: {
+        get: true,
+      },
+    },
+  },
+  {
+    method: 'get_org_info',
+    name: 'Get Org Info',
+    description: getOrgInfoPrompt(context),
+    parameters: getOrgInfoParameters(context),
+    actions: {
+      orgs: {
         get: true,
       },
     },

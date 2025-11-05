@@ -3,7 +3,7 @@
   "version": "1.8.0",
   "description": "FusionForce toolkit for AI agent workflows in typescript",
   "scripts": {
-    "clean": "rm -rf dist ai-sdk mcp langchain openai bedrock",
+    "clean": "rm -rf dist ai-sdk mcp",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm i && tsup",
     "build:debug": "TSUP_DEBUG=true npm run build"
@@ -16,18 +16,6 @@
     "./mcp": {
       "types": "./mcp/index.d.ts",
       "default": "./mcp/index.js"
-    },
-    "./langchain": {
-      "types": "./langchain/index.d.ts",
-      "default": "./langchain/index.js"
-    },
-    "./openai": {
-      "types": "./openai/index.d.ts",
-      "default": "./openai/index.js"
-    },
-    "./bedrock": {
-      "types": "./bedrock/index.d.ts",
-      "default": "./bedrock/index.js"
     }
   },
   "author": "",
@@ -35,9 +23,6 @@
   "files": [
     "ai-sdk",
     "mcp",
-    "langchain",
-    "openai",
-    "bedrock",
     "package.json"
   ],
   "devDependencies": {
@@ -54,8 +39,6 @@
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.32.0",
-    "@langchain/core": "0.3.6",
-    "openai": "4.86.1",
     "@modelcontextprotocol/sdk": "^1.6.1",
     "ai": "^4.0.23",
     "axios": "^1.8.4",

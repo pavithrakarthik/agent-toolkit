@@ -18,26 +18,5 @@ export default defineConfig([{ // Define multiple entry points
     format: ['cjs', 'esm'],
     sourcemap: true,
     target: 'node18',
-},
-{
-    entry: ['src/langchain/index.ts'],
-    outDir: "langchain",
-    dts: true,
-    format: ['cjs', 'esm'],
-    sourcemap: true,
-},
-{
-    entry: ['src/openai/index.ts'],
-    outDir: "openai",
-    dts: true,
-    format: ['cjs', 'esm'],
-    sourcemap: true,
-},
-{
-    entry: ['src/bedrock/index.ts'],
-    outDir: "bedrock",
-    dts: true,
-    format: ['cjs', 'esm'],
-    sourcemap: true,
 }
 ]);

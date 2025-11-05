@@ -88,7 +88,7 @@ class PCCClient {
             'Content-Type': 'application/json',
         };
 
-        this._accessToken = this._accessToken || (await this.getAccessToken());
+        this._accessToken = await this.getAccessToken();
         headers['Authorization'] = `Bearer ${this._accessToken}`;
 
 

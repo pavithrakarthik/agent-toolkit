@@ -1,6 +1,6 @@
 # PCC Agent Toolkit
 
-The PCC Agent Toolkit enables popular agent frameworks including OpenAI's Agent SDK, LangChain, Vercel's AI SDK, and Model Context Protocol (MCP) to integrate with PCC APIs through function calling. It includes support for TypeScript and is built on top of PCC APIs and the PointClickCare SDKs.
+The PCC Agent Toolkit enables popular agent frameworks including Vercel's AI SDK and Model Context Protocol (MCP) to integrate with PCC APIs through function calling. It includes support for TypeScript and is built on top of PCC APIs and the PointClickCare SDKs.
 
 
 ## Available tools

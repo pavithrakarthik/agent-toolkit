@@ -1,6 +1,6 @@
 # PCC Agent Toolkit
 
-The PCC Agent Toolkit enables popular agent frameworks including OpenAI's Agent SDK, LangChain, Vercel's AI SDK, Model Context Protocol (MCP), and Amazon Bedrock to integrate with PCC APIs through function calling. It includes support for TypeScript and is built on top of PCC APIs and the PCC SDKs.
+The PCC Agent Toolkit enables popular agent frameworks including Vercel's AI SDK and Model Context Protocol (MCP) to integrate with PCC APIs through function calling. It includes support for TypeScript and is built on top of PCC APIs and the PCC SDKs.
 
 
 ## Available tools
@@ -88,64 +88,6 @@ const { text: response } = await generateText({
   prompt: `Create an order for $50 for custom handcrafted item and get the payment link.`,
 });
 
-```
-
-## OpenAI
-
-### Using the toolkit
-```typescript
-let messages: ChatCompletionMessageParam[] = [
-    {
-        role: "user",
-        content: "Create an PCC order for $50 for Premium News service.",
-    },
-];
-const completion = await llm.chat.completions.create({
-    model: "gpt-4o",
-    messages,
-    tools: PCCToolkit.getTools(),
-});
-```
-
-## LangChain
-
-### Using the toolkit
-```typescript
-const agent = createReactAgent({
-    llm: llm,
-    tools: tools,
-});
-
-const result = await agent.invoke(
-    {
-        messages: [{
-            role: "user",
-            content: "Create an PCC order for $50 for Premium News service."
-        }]
-    }
-);
-```
-## Amazon Bedrock
-
-### Using the toolkit
-
-```typescript
-const userMessage = "Create one PCC order for $50 for Premium News service with 10% tax.";
-let messages: Message[] = [
-    {
-        role: "user",
-        content: [{ text: userMessage }],
-    }
-]
-const response = await client.send(
-    new ConverseCommand({ 
-        modelId: modelId,
-        messages: messages,
-        toolConfig: {
-            tools: tools
-        }
-    }),
-);
 ```
 
 ## PCC Model Context Protocol

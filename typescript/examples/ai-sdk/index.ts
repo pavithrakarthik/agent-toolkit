@@ -54,7 +54,7 @@ const pccWorkflows = new PCCWorkflows(ppConfig)
 /*
  * This is the merchant's typical use case. This stays the same for most requests.
  */
-const systemPrompt = `I am a developer I need to know the activated vendor apps for my orgId 12500006.`;
+const systemPrompt = `I am a developer I need to know the patient data for my app name DONTTOUCH1.`;
 
 
 // User can bring their own llm
@@ -62,18 +62,17 @@ const llm = azureOpenai('gpt-4o-mini');
 
 (async () => {
 
-    const userPrompt = `Get me the activated vendor apps for my orgId 12500006.`;
+    const userPrompt = `Get me the patient data for my app name DONTTOUCH1 with patient status as current.`;
 
     // // Invoke preconfigured workflows that will orchestrate across multiple calls.
-    // const summary = await pccWorkflows.getActivatedVendorApps(llm, userPrompt, systemPrompt);
-    // console.log(summary);
+    const summary = await pccWorkflows.getPatientData(llm, userPrompt, systemPrompt);
+    console.log(summary);
 
         // (or) Invoke through toolkit for specific use-cases
-    const {text: summary} = await generateText({
-        model: llm,
-        tools: pccToolkit.getTools(),
-        maxSteps: 10,
-        prompt: userPrompt,
-    });
-    console.log(summary);
+    // const {text: summary} = await generateText({
+    //     model: llm,
+    //     tools: pccToolkit.getTools(),
+    //     maxSteps: 10,
+    //     prompt: userPrompt,
+    // });
 })();

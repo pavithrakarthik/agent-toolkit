@@ -8,6 +8,51 @@ import { toLlmError, LlmError } from "./llmError";
 const logger = debug('agent-toolkit:functions');
 
 
+export async function getOrgInfo(
+  client: PCCClient,
+  context: Context,
+  params: TypeOf<ReturnType<typeof import('./parameters').getOrgInfoParameters>>
+) {
+  console.log('[getOrgInfo] Starting to get organization information with params:', JSON.stringify(params));
+
+  const headers = await client.getHeaders();
+  console.log('[getOrgInfo] Headers obtained');
+  
+  const url = `https://iureqa.pointclickcare.com/chapeauapi/internal/preview1/applications/${params.app_name}/activations?pageSize=200`;
+
+  // Make API call
+  try {
+    console.log('[getOrgInfo] Sending request to PCC API');
+    const response = await axios.get(url, { headers });
+    let responseData = response.data;
+    // if response.paging.hasMore is true, handle pagination here
+    // if (responseData.paging.hasMore) {
+    //   console.log('[getOrgInfo] Handling pagination for additional data');
+    //   let nextPage = responseData.paging.page * responseData.paging.pageSize;
+    //   while (nextPage) {
+    //     const paginatedResponse = await axios.get(`${url}&page=${nextPage}`, { headers });
+    //     responseData.data = responseData.data.concat(paginatedResponse.data.data);
+    //     nextPage = paginatedResponse.data.paging.nextPage;
+    //   }
+    // }
+    //loop through response data and get unique orgId and facs list and return it in an array
+
+    const items = responseData.data || [];
+    const orgInfo = Array.isArray(items) ? items.map((org: any) => ({
+      orgId: org.orgId,
+      facs: org.facs || [],
+    })) : [];
+
+    // Get unique orgId and facs list
+    const uniqueOrgInfo = Array.from(new Map(orgInfo.map(item => [item.orgId, item])).values());
+
+    return uniqueOrgInfo;
+  } catch (error: any) {
+    logger('[getOrgInfo] Error getting organization information:', error.message);
+    handleAxiosError(error);
+  }
+}
+
 export async function getPatientData(
   client: PCCClient,
   context: Context,
@@ -24,7 +69,7 @@ export async function getPatientData(
     logger('[getPatientData] Sending request to PCC API');
     const response = await axios.get(url, { headers });
     //get only patient ids and patient status for the response
-    const patientData = response.data.map((patient: any) => ({
+    const patientData = response.data.data.map((patient: any) => ({
       id: patient.id,
       status: patient.status,
     }));
@@ -45,7 +90,7 @@ export async function getActivatedVendorApps(
 
   const headers = await client.getHeaders();
   console.log('[getActivatedVendorApps] Headers obtained:', JSON.stringify(headers));
-  const url = `https://iureqa.pointclickcare.com/api/internal/preview1/orgs/${params.org_id}/patients`;
+  const url = `https://iureqa.nprd.pointclickcare.com/chapeauapi/internal/preview1/activated-vendor-apps?facId=${params.fac_id}&category=${params.category}&orgId=${params.org_id}`;
 
   // Make API call
   try {
@@ -86,7 +131,7 @@ export async function getFacs(
 
 // Helper function to handle Axios errors -> throws LlmError
 export function handleAxiosError(error: any): never {
-  console.log("[handleAxiosError] Processing error from PCC API");
+  console.log("[handleAxiosError] Processing error from PCC API", error);
 
   if (error?.response) {
     const { status, headers, data } = error.response;

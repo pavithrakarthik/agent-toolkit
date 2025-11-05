@@ -1,7 +1,8 @@
 import {
   getPatientData,
   getActivatedVendorApps,
-  getFacs
+  getFacs,
+  getOrgInfo
 } from './functions';
 
 import type { Context } from './configuration';
@@ -55,6 +56,8 @@ class PCCAPI {
         return getActivatedVendorApps(this.pccClient, this.context, arg);
       case 'get_facs':
         return getFacs(this.pccClient, this.context, arg);
+      case 'get_org_info':
+        return getOrgInfo(this.pccClient, this.context, arg);
       default:
         throw new Error(`Invalid method: ${method}`);
     }
