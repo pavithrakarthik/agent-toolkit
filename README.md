@@ -222,7 +222,7 @@ This guide explains how to generate an access token for PCC API integration, inc
 ### Using cURL
 
 ```bash
-curl -v https://api-m.sandbox.pointclickcare.com/v1/oauth2/token \\
+curl -v https://connect2.pointclickcare.com/auth/token \\
   -H \"Accept: application/json\" \\
   -H \"Accept-Language: en_US\" \\
   -u \"CLIENT_ID:CLIENT_SECRET\" \\
@@ -234,7 +234,7 @@ Replace `CLIENT_ID` and `CLIENT_SECRET` with your actual credentials. For produc
 
 ### Using Postman
 
-1. Create a new request to `https://api-m.sandbox.pointclickcare.com/v1/oauth2/token`
+1. Create a new request to `https://connect2.pointclickcare.com/auth/token`
 2. Set method to **POST**
 3. Under **Authorization**, select **Basic Auth** and enter your Client ID and Client Secret
 4. Under **Body**, select **x-www-form-urlencoded** and add a key `grant_type` with value `client_credentials`
@@ -256,12 +256,6 @@ A successful response will look like:
 ```
 
 Copy the `access_token` value for use in your Claude Desktop integration.
-
-## Token Details
-
-- **Sandbox Tokens**: Valid for 3-8 hours
-- **Production Tokens**: Valid for 8 hours
-- It's recommended to implement token refresh logic before expiration
 
 ## Using the Token with Claude Desktop
 

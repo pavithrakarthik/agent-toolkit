@@ -64,26 +64,30 @@ class PCCWorkflows {
                 maxSteps: 10,
                 prompt: `Get facility data from PCC for the following details: ${JSON.stringify({ org_id: orgId })}`,
             });
-            this.log!(`Response 3a: Retrieved facility data for org id ${orgId}: ${facilityData}`);
+
             const { object: facilityDataObject } = await generateObject<{ facilityList: z.infer<ReturnType<typeof schemaFacilityList>> }>({
                 model: llm,
                 schema: z.object({ facilityList: schemaFacilityList() }),
                 prompt: `Create a facilityList object with the facility data ${facilityData}`,
             });
-            // Process each organization to get facility names
+            // Build a map from fac_id to facility data for faster lookup
+            const facilityMap = new Map<string, typeof facilityDataObject.facilityList[number]>();
+            for (const facilityData of facilityDataObject.facilityList) {
+                facilityMap.set(facilityData.fac_id, facilityData);
+            }
+            // Process each organization to get facility names using the map
             for (const orgData of orgDataList) {
-                for (const facilityData of facilityDataObject.facilityList) {
-                    if (orgData.fac_id === facilityData.fac_id) {
-                        orgData.facility_name = facilityData.facility_name || '';
-                        orgData.health_type = facilityData.health_type || '';
-                    }
+                const facilityData = facilityMap.get(orgData.fac_id);
+                if (facilityData) {
+                    orgData.facility_name = facilityData.facility_name || '';
+                    orgData.health_type = facilityData.health_type || '';
                 }
             }
         }
 
     this.log!(`Response 3b: Completed processing facility names for all organizations ${JSON.stringify(orgDataList)}`);
 
-        this.log!(`Step 3: I am now choosing the correct tool from PCC's toolkit to retrieve patient data using the generated object from previous step.`);
+        this.log!(`Step 4: I am now choosing the correct tool from PCC's toolkit to retrieve patient data using the generated object from previous step.`);
         //for each orgData in orgDataList, get patient data and combine
 
         for (const orgData of orgDataList) {
@@ -95,29 +99,31 @@ class PCCWorkflows {
             maxSteps: 10,
             prompt: `Retrieve the patient data and combine with facility data with the following details: ${JSON.stringify(patientDataObject)} using tool get_patient_data.`,
         });
+        console.log(`Response 4: I have retrieved the patient data successfully for ${orgData.org_id} and ${orgData.fac_id}: ${JSON.stringify(patientDataText)}.`);
         //extract id, status, firstName, lastName, patientStatus from patientData
-        const { object: patientData} = await generateObject<{ id: string; status?: string; firstName?: string; lastName?: string; patientStatus?: string; }> ({
+        const { object: patientDataList } = await generateObject<{ patientList: Array<{ patientId: string; firstName: string; lastName: string; patientStatus: string; }> }> ({
             model: llm,
-            schema: z.object({ 
-                id: z.string(),
-                status: z.string().optional(),
-                firstName: z.string().optional(),
-                lastName: z.string().optional(),
-                patientStatus: z.string().optional(),
-            }),
+            schema: z.object({ patientList: z.array(z.object({ 
+                patientId: z.string(),
+                firstName: z.string().default(''),
+                lastName: z.string().default(''),
+                patientStatus: z.string().default(''),
+            }))}),
             prompt: `Create a patientDataList object with the patient data ${patientDataText}`,
         });
-        console.log(`Response 3: I have retrieved the patient data successfully: ${JSON.stringify(patientData)}.`);
+        console.log(`Patient Data: ${JSON.stringify(patientDataList)}.`);
         // Map the patient data to the orgData
-        orgData.patient_id = patientData.id;
-        orgData.firstName = patientData.firstName ?? '';
-        orgData.lastName = patientData.lastName ?? '';
-        orgData.patientStatus = patientData.patientStatus ?? '';
+        orgData.patientList = patientDataList.patientList;
     }
-
-        const summary = `The patient data has been retrieved successfully: ${JSON.stringify(orgDataList)}.`;
-        this.log!(`Output: ${summary}`);
-        return summary;
+        this.log!(`The combined data for all organizations: ${JSON.stringify(orgDataList)}.`);
+        this.log!(`Step 5: I am now summarizing the retrieved patient data from PCC.`);
+        const { text: summarizedText } = await generateText({
+            model: llm,
+            maxSteps: 10,
+            prompt: `Summarize the patient data retrieved from PCC: ${JSON.stringify(orgDataList)}.`,
+        });
+        this.log!(`Output: ${summarizedText}`);
+        return summarizedText;
     }
 
     public async getActivatedVendorApps(llm: LanguageModelV1, userPrompt: string, systemPrompt: string): Promise<string> {

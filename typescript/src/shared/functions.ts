@@ -70,7 +70,7 @@ export async function getPatientData(
     const response = await axios.get(url, { headers });
     //get only patient ids and patient status for the response
     const patientData = response.data.data.map((patient: any) => ({
-      id: patient.id,
+      patientId: patient.patientId,
       firstName: patient.firstName,
       lastName: patient.lastName,
       patientStatus: patient.patientStatus,

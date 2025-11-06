@@ -40,14 +40,16 @@ export const schemaOrgDataList = () => z.array(z.object({
     .describe('The name of the facility.'),
   health_type: z.string()
     .describe('The health type of the facility.'),
-  patient_id: z.string()
-    .describe('The ID of the patient.'),
-  firstName: z.string()
-    .describe('The first name of the patient.'),
-  lastName: z.string()
-    .describe('The last name of the patient.'),
-  patientStatus: z.string()
-    .describe('The patient status.'),
+  patientList: z.array(z.object({
+    patientId: z.string()
+      .describe('The ID of the patient.'),
+    firstName: z.string()
+      .describe('The first name of the patient.'),
+    lastName: z.string()
+      .describe('The last name of the patient.'),
+    patientStatus: z.string()
+      .describe('The patient status.'),
+  })).describe('List of patients associated with the organization and facility.'),
 }));
 
 export const schemaFacilityList = () => z.array(z.object({
